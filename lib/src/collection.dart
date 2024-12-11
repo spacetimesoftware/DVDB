@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:dvdb/src/document.dart';
 import 'package:dvdb/src/math.dart';
@@ -44,7 +43,6 @@ class Collection {
   }
 
   List<SearchResult> search(Float64List query, {int numResults = 10, double? threshold}) {
-
     final List<SearchResult> similarities = <SearchResult>[];
     for (var document in documents.values) {
       final double similarity = MathFunctions().cosineSimilarity(query, document.embedding);
@@ -53,7 +51,7 @@ class Collection {
         continue;
       }
 
-      similarities.add(SearchResult(id:document.id, text:document.text, score:similarity));
+      similarities.add(SearchResult(id: document.id, text: document.text, score: similarity));
     }
 
     similarities.sort((SearchResult a, SearchResult b) => b.score.compareTo(a.score));
@@ -61,10 +59,10 @@ class Collection {
   }
 
   Future<void> _writeDocument(Document document) async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    Directory documentsDirectory = Directory('./');
     String path = join(documentsDirectory.path, '$name.json');
     final File file = File(path);
-    
+
     var encodedDocument = json.encode(document.toJson());
     List<int> bytes = utf8.encode('$encodedDocument\n');
 
@@ -72,7 +70,7 @@ class Collection {
   }
 
   Future<void> _saveAllDocuments() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    Directory documentsDirectory = Directory('./');
     String path = join(documentsDirectory.path, '$name.json');
     final File file = File(path);
 
@@ -83,10 +81,10 @@ class Collection {
   }
 
   Future<void> load() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    Directory documentsDirectory = Directory('./');
     String path = join(documentsDirectory.path, '$name.json');
     final File file = File(path);
-    
+
     if (!file.existsSync()) {
       documents.clear();
       return;
